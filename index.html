@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Для тебя ❤️</title>
+    <style>
+        body {
+            margin: 0; padding: 0;
+            height: 100vh; display: flex; justify-content: center; align-items: center;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden; user-select: none; /* Чтобы текст не выделялся при тапах */
+        }
+
+        /* Фоновое изображение (размытое) */
+        body::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: url('https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=1920') no-repeat center center;
+            background-size: cover; filter: blur(15px); opacity: 0.5; z-index: -1;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            width: 90%; max-width: 400px;
+            border-radius: 25px; padding: 25px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+            position: relative; z-index: 10;
+            border: 1px solid rgba(255,255,255,0.5);
+            backdrop-filter: blur(10px);
+        }
+
+        .slide { display: none; animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .slide.active { display: block; }
+
+        @keyframes popIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* НАСТРОЙКИ ФОТО */
+        .photo-frame {
+            width: 100%;
+            height: 320px; /* Фиксированная высота */
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            background: #eee; /* Заглушка, пока грузится фото */
+        }
+
+        .photo-frame img {
+            width: 100%; height: 100%;
+            object-fit: cover; /* Обрезает лишнее, заполняя блок */
+            object-position: center;
+        }
+
+        h2 { color: #2d3436; margin: 10px 0; font-size: 24px; font-weight: 800; }
+        p { color: #636e72; line-height: 1.6; margin-bottom: 20px; font-size: 16px; }
+
+        .btn {
+            background: linear-gradient(45deg, #ff6b6b, #ee5253);
+            color: white; border: none; padding: 16px; width: 100%;
+            border-radius: 50px; font-size: 18px; font-weight: bold;
+            cursor: pointer; box-shadow: 0 10px 20px rgba(238, 82, 83, 0.3);
+            transition: all 0.3s; outline: none; -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn:active { transform: scale(0.96); }
+        .btn-green { background: linear-gradient(45deg, #11998e, #38ef7d); }
+
+        .heart-bg { position: absolute; font-size: 30px; opacity: 0.3; animation: float 4s infinite ease-in-out; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+
+        .falling-heart {
+            position: fixed; top: -50px; pointer-events: none;
+            animation: fall linear forwards; z-index: 9999;
+        }
+        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); opacity: 0; } }
+
+        /* Иконка музыки */
+        .music-icon { font-size: 20px; margin-right: 5px; }
+    </style>
+</head>
+<body>
+
+    <!-- АУДИО ПЛЕЕР (Скрытый) -->
+    <!-- ЗАМЕНИ ССЫЛКУ НИЖЕ НА ПРЯМУЮ ССЫЛКУ НА MP3 -->
+    <audio id="bg-music" loop>
+        <source src="myz.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Декор -->
+    <div class="heart-bg" style="top: 10%; left: 5%;">❤️</div>
+    <div class="heart-bg" style="bottom: 15%; right: 5%; animation-delay: 1s;"></div>
+    <div class="heart-bg" style="top: 50%; left: 90%; animation-delay: 2s;">💖</div>
+
+    <div class="card">
+
+        <!-- СЛАЙД 1: Интро с фото -->
+        <div class="slide active" id="slide1">
+            <div class="photo-frame">
+                <!-- ЗАМЕНИ "main.jpg" НА ИМЯ ТВОЕГО ФОТО -->
+                <img src="optimized/01.jpg" alt="Главное фото">
+            </div>
+            <h2>Привет, любимая ❤️</h2>
+            <p>Я знаю, что ты в отпуске... но я соскучился.<br>Включи звук и нажми кнопку 👇</p>
+            <button class="btn" onclick="startShow()">Начать ❤️</button>
+        </div>
+
+        <!-- СЛАЙД 2 -->
+        <div class="slide" id="slide2">
+            <div class="photo-frame">
+                <!-- ССЫЛКА НА ФОТО 1 -->
+                <img src="optimized/1.jpg" alt="We">
+            </div>
+            <h2>Как всё начиналось</h2>
+            <p>Помнишь тот день?</p>
+            <button class="btn" onclick="next(2)">Дальше ➡️</button>
+        </div>
+
+        <!-- СЛАЙД 3 -->
+        <div class="slide" id="slide3">
+            <div class="photo-frame">
+                <!-- ССЫЛКА НА ФОТО 2 -->
+                <img src="optimized/2.jpg" alt="We">
+            </div>
+            <h2>Наша первая поездка</h2>
+            <p>Ты была как всегда самая красивая.</p>
+            <button class="btn" onclick="next(3)">Дальше ➡️</button>
+        </div>
+
+        <!-- СЛАЙД 4 -->
+        <div class="slide" id="slide4">
+            <div class="photo-frame">
+                <!-- ССЫЛКА НА ФОТО 3 -->
+                <img src="optimized/3.jpg" alt="We">
+            </div>
+            <h2>И ещё одна поездка</h2>
+            <p>Вместе мы сила.</p>
+            <button class="btn" onclick="next(4)">Дальше ➡️</button>
+        </div>
+
+        <!-- СЛАЙД 5 -->
+        <div class="slide" id="slide5">
+            <div class="photo-frame">
+                <!-- ССЫЛКА НА ФОТО 4 -->
+                <img src="optimized/4.jpg" alt="We">
+            </div>
+            <h2>Мои кракозябры</h2>
+            <p>Люблю Вас.</p>
+            <button class="btn" onclick="next(5)">Дальше ➡️</button>
+        </div>
+
+        <!-- СЛАЙД 6 -->
+        <div class="slide" id="slide6">
+            <div class="photo-frame">
+                <!-- ССЫЛКА НА ФОТО 5 -->
+                <img src="optimized/5.jpg" alt="We">
+            </div>
+            <h2>Ваш смех</h2>
+            <p>Мой любимый звук 😊</p>
+            <button class="btn" onclick="next(6)">Дальше ➡️</button>
+        </div>
+
+        <!-- СЛАЙД 7 -->
+        <div class="slide" id="slide7">
+            <div class="photo-frame">
+                <!-- ССЫЛКА НА ФОТО 6 -->
+                <img src="optimized/6.jpg" alt="We">
+            </div>
+            <h2>Ты моё вдохновение</h2>
+            <p>Моя птичка 😘.</p>
+            <button class="btn" onclick="next(7)">Дальше ➡️</button>
+        </div>
+
+        <!-- СЛАЙД 8 -->
+        <div class="slide" id="slide8">
+            <div class="photo-frame">
+                <!-- ССЫЛКА НА ФОТО 7 -->
+                <img src="optimized/7.jpg" alt="We">
+            </div>
+            <h2>И еще...</h2>
+            <p>Вспомни это.</p>
+            <button class="btn" onclick="next(8)">Дальше ➡️</button>
+        </div>
+
+        <!-- СЛАЙД 9: ФИНАЛ -->
+        <div class="slide" id="slide9">
+            <h2>Я люблю тебя ❤️</h2>
+            <p>Возвращайся домой скорее.<br>Я жду.</p>
+            <div style="font-size: 50px; margin: 15px 0;">🏠💑🍷</div>
+            <button class="btn btn-green" onclick="heartStorm()">Нажми, если любишь!</button>
+        </div>
+
+    </div>
+
+    <script>
+        // Запуск шоу + Музыка
+        function startShow() {
+            // Включаем музыку
+            var music = document.getElementById("bg-music");
+            music.volume = 0.5; // Громкость 50%
+            music.play().catch(function(error) {
+                console.log("Автозапуск заблокирован браузером");
+            });
+            // Переходим к слайду 2
+            next(1);
+        }
+
+        function next(current) {
+            document.getElementById('slide' + current).classList.remove('active');
+            document.getElementById('slide' + (current + 1)).classList.add('active');
+        }
+
+        function heartStorm() {
+            const btn = document.querySelector('.btn-green');
+            btn.innerHTML = "Люблю бесконечно! ❤️";
+
+            // Спавн сердец
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.classList.add('falling-heart');
+                heart.innerHTML = ['💕','💖','','💓','❤️'][Math.floor(Math.random()*5)];
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = Math.random() * 2 + 2 + 's';
+                heart.style.fontSize = Math.random() * 30 + 20 + 'px';
+                document.body.appendChild(heart);
+                setTimeout(() => heart.remove(), 4000);
+            }, 100);
+        }
+    </script>
+</body>
+</html>
